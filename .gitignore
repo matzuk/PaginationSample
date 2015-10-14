@@ -4,7 +4,6 @@
 #local.properties
 .DS_Store
 /build
-/gradle
 /captures
 bin
 gen
