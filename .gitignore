@@ -1,8 +1,10 @@
 .gradle
 /.idea/workspace.xml
 /.idea/libraries
+#local.properties
 .DS_Store
 /build
+/gradle
 /captures
 bin
 gen
@@ -11,3 +13,7 @@ gen
 app/app.iml
 app/src/androidTest/java/com/matsyuk/autoloadingrecyclerviewsample/ApplicationTest.java
 app/src/test/java/com/matsyuk/autoloadingrecyclerviewsample/ExampleUnitTest.java
+gradle.properties
+gradlew
+gradlew.bat
+local.properties
