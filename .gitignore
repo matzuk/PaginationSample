@@ -1,5 +1,4 @@
 .gradle
-/local.properties
 /.idea/workspace.xml
 /.idea/libraries
 .DS_Store
@@ -10,11 +9,5 @@ gen
 .idea
 *.iml
 app/app.iml
-/gradlew.bat
-/gradle
-/gradlew
 app/src/androidTest/java/com/matsyuk/autoloadingrecyclerviewsample/ApplicationTest.java
 app/src/test/java/com/matsyuk/autoloadingrecyclerviewsample/ExampleUnitTest.java
-build.gradle
-gradle.properties
-settings.gradle
