@@ -21,6 +21,9 @@ import android.util.Log;
 
 import com.matsyuk.autoloadingrecyclerviewsample.utils.BackgroundExecutor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Subscriber;
@@ -76,7 +79,7 @@ public class AutoRecyclerView<T> extends RecyclerView {
         addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int position = getSupportLinearLayoutManager().findLastVisibleItemPosition();
+                int position = getLastVisibleItemPosition();
                 int limit = getLimit();
                 int updatePosition = getAdapter().getItemCount() - 1 - (limit / 2);
                 if (position >= updatePosition) {
@@ -88,18 +91,21 @@ public class AutoRecyclerView<T> extends RecyclerView {
         });
     }
 
-    @Override
-    public void setLayoutManager(LayoutManager layout) {
-        // FIXME temp restriction
-        // later add handling for StaggeredGridLayoutManager
-        if (layout instanceof StaggeredGridLayoutManager) {
-            throw new AutoRecyclerViewExceptions("Incorrect LayoutManager. Please set LinearLayoutManager!");
+    private int getLastVisibleItemPosition() {
+        Class recyclerViewLMClass = getLayoutManager().getClass();
+        if (recyclerViewLMClass == LinearLayoutManager.class || LinearLayoutManager.class.isAssignableFrom(recyclerViewLMClass)) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager)getLayoutManager();
+            return linearLayoutManager.findLastVisibleItemPosition();
+        } else if (recyclerViewLMClass == StaggeredGridLayoutManager.class || StaggeredGridLayoutManager.class.isAssignableFrom(recyclerViewLMClass)) {
+            StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager)getLayoutManager();
+            int[] into = staggeredGridLayoutManager.findLastVisibleItemPositions(null);
+            List<Integer> intoList = new ArrayList<>();
+            for (int i : into) {
+                intoList.add(i);
+            }
+            return Collections.max(intoList);
         }
-        super.setLayoutManager(layout);
-    }
-
-    private LinearLayoutManager getSupportLinearLayoutManager() {
-        return (LinearLayoutManager)getLayoutManager();
+        throw new AutoRecyclerViewExceptions("Unknown LayoutManager class: " + recyclerViewLMClass.toString());
     }
 
     public int getLimit() {
