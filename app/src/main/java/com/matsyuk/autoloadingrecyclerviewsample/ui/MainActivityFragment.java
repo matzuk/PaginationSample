@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import com.matsyuk.autoloadingrecyclerviewsample.R;
 import com.matsyuk.autoloadingrecyclerviewsample.data.EmulateResponseManager;
 import com.matsyuk.autoloadingrecyclerviewsample.data.Item;
-import com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoRecyclerView;
+import com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoLoadingRecyclerView;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -30,7 +30,7 @@ import com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoRecycler
 public class MainActivityFragment extends Fragment {
 
     private final static int LIMIT = 50;
-    private AutoRecyclerView<Item> recyclerView;
+    private AutoLoadingRecyclerView<Item> recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,10 +47,10 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void init(View view) {
-        recyclerView = (AutoRecyclerView) view.findViewById(R.id.RecyclerView);
+        recyclerView = (AutoLoadingRecyclerView) view.findViewById(R.id.RecyclerView);
         GridLayoutManager recyclerViewLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerViewLayoutManager.supportsPredictiveItemAnimations();
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter();
+        LoadingRecyclerViewAdapter recyclerViewAdapter = new LoadingRecyclerViewAdapter();
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerView.setLimit(LIMIT);
         recyclerView.setAdapter(recyclerViewAdapter);

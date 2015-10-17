@@ -22,7 +22,6 @@ import android.util.Log;
 import com.matsyuk.autoloadingrecyclerviewsample.utils.BackgroundExecutor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +34,7 @@ import rx.subjects.PublishSubject;
 /**
  * @author e.matsyuk
  */
-public class AutoRecyclerView<T> extends RecyclerView {
+public class AutoLoadingRecyclerView<T> extends RecyclerView {
 
     private static final String TAG = "AutoLoadingRecyclerView";
     private static  final int START_OFFSET = 0;
@@ -45,19 +44,19 @@ public class AutoRecyclerView<T> extends RecyclerView {
     private Subscription subscribeToLoadingChannelSubscription;
     private int limit;
     private ILoading<T> iLoading;
-    private AutoRecyclerViewAdapter<T> autoRecyclerViewAdapter;
+    private AutoLoadingRecyclerViewAdapter<T> autoLoadingRecyclerViewAdapter;
 
-    public AutoRecyclerView(Context context) {
+    public AutoLoadingRecyclerView(Context context) {
         super(context);
         init();
     }
 
-    public AutoRecyclerView(Context context, AttributeSet attrs) {
+    public AutoLoadingRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public AutoRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+    public AutoLoadingRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -105,12 +104,12 @@ public class AutoRecyclerView<T> extends RecyclerView {
             }
             return Collections.max(intoList);
         }
-        throw new AutoRecyclerViewExceptions("Unknown LayoutManager class: " + recyclerViewLMClass.toString());
+        throw new AutoLoadingRecyclerViewExceptions("Unknown LayoutManager class: " + recyclerViewLMClass.toString());
     }
 
     public int getLimit() {
         if (limit <= 0) {
-            throw new AutoRecyclerViewExceptions("limit must be initialised! And limit must be more than zero!");
+            throw new AutoLoadingRecyclerViewExceptions("limit must be initialised! And limit must be more than zero!");
         }
         return limit;
     }
@@ -125,29 +124,29 @@ public class AutoRecyclerView<T> extends RecyclerView {
     @Deprecated
     @Override
     public void setAdapter(Adapter adapter) {
-        if (adapter instanceof AutoRecyclerViewAdapter) {
+        if (adapter instanceof AutoLoadingRecyclerViewAdapter) {
             super.setAdapter(adapter);
         } else {
-            throw new AutoRecyclerViewExceptions("Adapter must be implement IAutoLoadedAdapter");
+            throw new AutoLoadingRecyclerViewExceptions("Adapter must be implement IAutoLoadedAdapter");
         }
     }
 
     /**
      * required method
      */
-    public void setAdapter(AutoRecyclerViewAdapter<T> autoRecyclerViewAdapter) {
-        if (autoRecyclerViewAdapter == null) {
-            throw new AutoRecyclerViewExceptions("Null adapter. Please initialise adapter!");
+    public void setAdapter(AutoLoadingRecyclerViewAdapter<T> autoLoadingRecyclerViewAdapter) {
+        if (autoLoadingRecyclerViewAdapter == null) {
+            throw new AutoLoadingRecyclerViewExceptions("Null adapter. Please initialise adapter!");
         }
-        this.autoRecyclerViewAdapter = autoRecyclerViewAdapter;
-        super.setAdapter(autoRecyclerViewAdapter);
+        this.autoLoadingRecyclerViewAdapter = autoLoadingRecyclerViewAdapter;
+        super.setAdapter(autoLoadingRecyclerViewAdapter);
     }
 
-    public AutoRecyclerViewAdapter<T> getAdapter() {
-        if (autoRecyclerViewAdapter == null) {
-            throw new AutoRecyclerViewExceptions("Null adapter. Please initialise adapter!");
+    public AutoLoadingRecyclerViewAdapter<T> getAdapter() {
+        if (autoLoadingRecyclerViewAdapter == null) {
+            throw new AutoLoadingRecyclerViewExceptions("Null adapter. Please initialise adapter!");
         }
-        return autoRecyclerViewAdapter;
+        return autoLoadingRecyclerViewAdapter;
     }
 
     public void setLoadingObservable(ILoading<T> iLoading) {
@@ -156,7 +155,7 @@ public class AutoRecyclerView<T> extends RecyclerView {
 
     public ILoading<T> getLoadingObservable() {
         if (iLoading == null) {
-            throw new AutoRecyclerViewExceptions("Null LoadingObservable. Please initialise LoadingObservable!");
+            throw new AutoLoadingRecyclerViewExceptions("Null LoadingObservable. Please initialise LoadingObservable!");
         }
         return iLoading;
     }

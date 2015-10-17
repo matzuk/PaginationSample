@@ -13,7 +13,7 @@
 package com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading;
 
 /**
- * Offset and limit for {@link AutoRecyclerView AutoLoadedRecyclerView channel}
+ * Offset and limit for {@link AutoLoadingRecyclerView AutoLoadedRecyclerView channel}
  *
  * @author e.matsyuk
  */
