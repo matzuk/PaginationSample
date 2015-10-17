@@ -32,7 +32,7 @@ import rx.subjects.PublishSubject;
 /**
  * @author e.matsyuk
  */
-public class AutoLoadingRecyclerView<T> extends RecyclerView {
+public class AutoRecyclerView<T> extends RecyclerView {
 
     private static final String TAG = "AutoLoadingRecyclerView";
     private static  final int START_OFFSET = 0;
@@ -42,19 +42,19 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
     private Subscription subscribeToLoadingChannelSubscription;
     private int limit;
     private ILoading<T> iLoading;
-    private AutoLoadingAdapter<T> autoLoadingAdapter;
+    private AutoRecyclerViewAdapter<T> autoRecyclerViewAdapter;
 
-    public AutoLoadingRecyclerView(Context context) {
+    public AutoRecyclerView(Context context) {
         super(context);
         init();
     }
 
-    public AutoLoadingRecyclerView(Context context, AttributeSet attrs) {
+    public AutoRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public AutoLoadingRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+    public AutoRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
@@ -93,7 +93,7 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
         // FIXME temp restriction
         // later add handling for StaggeredGridLayoutManager
         if (layout instanceof StaggeredGridLayoutManager) {
-            throw new AutoLoadingRecyclerViewExceptions("Incorrect LayoutManager. Please set LinearLayoutManager!");
+            throw new AutoRecyclerViewExceptions("Incorrect LayoutManager. Please set LinearLayoutManager!");
         }
         super.setLayoutManager(layout);
     }
@@ -104,7 +104,7 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
 
     public int getLimit() {
         if (limit <= 0) {
-            throw new AutoLoadingRecyclerViewExceptions("limit must be initialised! And limit must be more than zero!");
+            throw new AutoRecyclerViewExceptions("limit must be initialised! And limit must be more than zero!");
         }
         return limit;
     }
@@ -119,29 +119,29 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
     @Deprecated
     @Override
     public void setAdapter(Adapter adapter) {
-        if (adapter instanceof AutoLoadingAdapter) {
+        if (adapter instanceof AutoRecyclerViewAdapter) {
             super.setAdapter(adapter);
         } else {
-            throw new AutoLoadingRecyclerViewExceptions("Adapter must be implement IAutoLoadedAdapter");
+            throw new AutoRecyclerViewExceptions("Adapter must be implement IAutoLoadedAdapter");
         }
     }
 
     /**
      * required method
      */
-    public void setAdapter(AutoLoadingAdapter<T> autoLoadingAdapter) {
-        if (autoLoadingAdapter == null) {
-            throw new AutoLoadingRecyclerViewExceptions("Null adapter. Please initialise adapter!");
+    public void setAdapter(AutoRecyclerViewAdapter<T> autoRecyclerViewAdapter) {
+        if (autoRecyclerViewAdapter == null) {
+            throw new AutoRecyclerViewExceptions("Null adapter. Please initialise adapter!");
         }
-        this.autoLoadingAdapter = autoLoadingAdapter;
-        super.setAdapter(autoLoadingAdapter);
+        this.autoRecyclerViewAdapter = autoRecyclerViewAdapter;
+        super.setAdapter(autoRecyclerViewAdapter);
     }
 
-    public AutoLoadingAdapter<T> getAdapter() {
-        if (autoLoadingAdapter == null) {
-            throw new AutoLoadingRecyclerViewExceptions("Null adapter. Please initialise adapter!");
+    public AutoRecyclerViewAdapter<T> getAdapter() {
+        if (autoRecyclerViewAdapter == null) {
+            throw new AutoRecyclerViewExceptions("Null adapter. Please initialise adapter!");
         }
-        return autoLoadingAdapter;
+        return autoRecyclerViewAdapter;
     }
 
     public void setLoadingObservable(ILoading<T> iLoading) {
@@ -150,7 +150,7 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
 
     public ILoading<T> getLoadingObservable() {
         if (iLoading == null) {
-            throw new AutoLoadingRecyclerViewExceptions("Null LoadingObservable. Please initialise LoadingObservable!");
+            throw new AutoRecyclerViewExceptions("Null LoadingObservable. Please initialise LoadingObservable!");
         }
         return iLoading;
     }

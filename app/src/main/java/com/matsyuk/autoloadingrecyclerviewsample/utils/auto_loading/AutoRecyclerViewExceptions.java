@@ -15,13 +15,13 @@ package com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading;
 /**
  *
  */
-public class AutoLoadingRecyclerViewExceptions extends RuntimeException {
+public class AutoRecyclerViewExceptions extends RuntimeException {
 
-    public AutoLoadingRecyclerViewExceptions() {
+    public AutoRecyclerViewExceptions() {
         super("Exception in AutoLoadedRecyclerView");
     }
 
-    public AutoLoadingRecyclerViewExceptions(String detailMessage) {
+    public AutoRecyclerViewExceptions(String detailMessage) {
         super(detailMessage);
     }
 }

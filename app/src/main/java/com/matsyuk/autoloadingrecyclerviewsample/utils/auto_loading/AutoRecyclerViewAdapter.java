@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Adapter for {@link AutoLoadingRecyclerView AutoLoadedRecyclerView}
+ * Adapter for {@link AutoRecyclerView AutoLoadedRecyclerView}
  *
  * @author e.matsyuk
  */
-public abstract class AutoLoadingAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class AutoRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<T> listElements = new ArrayList<>();
 

@@ -20,12 +20,12 @@ import android.widget.TextView;
 
 import com.matsyuk.autoloadingrecyclerviewsample.R;
 import com.matsyuk.autoloadingrecyclerviewsample.data.Item;
-import com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoLoadingAdapter;
+import com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoRecyclerViewAdapter;
 
 /**
  * @author e.matsyuk
  */
-public class RecyclerViewAdapter extends AutoLoadingAdapter<Item> {
+public class RecyclerViewAdapter extends AutoRecyclerViewAdapter<Item> {
 
     private static final int MAIN_VIEW = 0;
 
