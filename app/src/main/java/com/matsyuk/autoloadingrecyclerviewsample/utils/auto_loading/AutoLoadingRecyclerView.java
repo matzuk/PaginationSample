@@ -178,8 +178,6 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
             }
         };
         subscribeToLoadingChannelSubscription = scrollLoadingChannel
-                .subscribeOn(Schedulers.from(BackgroundExecutor.getSafeBackgroundExecutor()))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(toLoadingChannelSubscriber);
     }
 

@@ -13,7 +13,7 @@
 package com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading;
 
 /**
- *
+ * @author e.matsyuk
  */
 public class AutoLoadingRecyclerViewExceptions extends RuntimeException {
 

@@ -51,6 +51,7 @@ public class MainActivityFragment extends Fragment {
         GridLayoutManager recyclerViewLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerViewLayoutManager.supportsPredictiveItemAnimations();
         LoadingRecyclerViewAdapter recyclerViewAdapter = new LoadingRecyclerViewAdapter();
+        recyclerViewAdapter.setHasStableIds(true);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerView.setLimit(LIMIT);
         recyclerView.setAdapter(recyclerViewAdapter);
