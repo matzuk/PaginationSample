@@ -2,7 +2,6 @@
 Sample of practical using of AuthLoadingRecyclerView
 
 # Description
-Sample of practical using of AuthLoadingRecyclerView
 Article about AuthLoadingRecyclerView - http://habrahabr.ru/post/268991/
 
 # License
