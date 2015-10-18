@@ -72,6 +72,4 @@ public class LoadingRecyclerViewAdapter extends AutoLoadingRecyclerViewAdapter<I
         mainHolder.textView.setText(getItem(position).getItemStr());
     }
 
-
-
 }
