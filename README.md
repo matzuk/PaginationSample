@@ -1,8 +1,8 @@
 # AutoLoadingRecyclerViewSample
-Sample of practical using of AuthLoadingRecyclerView
+Sample of practical using of AutoLoadingRecyclerView
 
 # Description
-Article about AuthLoadingRecyclerView - http://habrahabr.ru/post/268991/
+Article about AutoLoadingRecyclerView - http://habrahabr.ru/post/268991/
 
 # License
 
