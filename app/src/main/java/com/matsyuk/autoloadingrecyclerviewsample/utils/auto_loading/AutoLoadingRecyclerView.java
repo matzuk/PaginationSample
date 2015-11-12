@@ -13,6 +13,8 @@
 package com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -37,7 +39,7 @@ import rx.subjects.PublishSubject;
 public class AutoLoadingRecyclerView<T> extends RecyclerView {
 
     private static final String TAG = "AutoLoadingRecyclerView";
-    private static  final int START_OFFSET = 0;
+    private static final int START_OFFSET = 0;
 
     private PublishSubject<OffsetAndLimit> scrollLoadingChannel = PublishSubject.create();
     private Subscription loadNewItemsSubscription;
@@ -45,6 +47,9 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
     private int limit;
     private ILoading<T> iLoading;
     private AutoLoadingRecyclerViewAdapter<T> autoLoadingRecyclerViewAdapter;
+    // for restore after reorientation
+    private boolean firstPortionLoaded;
+    private boolean allPortionsLoaded;
 
     public AutoLoadingRecyclerView(Context context) {
         super(context);
@@ -66,8 +71,17 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
      * call after init all parameters in AutoLoadedRecyclerView
      */
     public void startLoading() {
-        OffsetAndLimit offsetAndLimit = new OffsetAndLimit(START_OFFSET, getLimit());
-        loadNewItems(offsetAndLimit);
+        // if all data was loaded then new download is not needed
+        if (allPortionsLoaded) {
+            return;
+        }
+        // if first portion was loaded then subscribe to LoadingChannel
+        if (firstPortionLoaded) {
+            subscribeToLoadingChannel();
+        } else {
+            OffsetAndLimit offsetAndLimit = new OffsetAndLimit(START_OFFSET, getLimit());
+            loadNewItems(offsetAndLimit);
+        }
     }
 
     private void init() {
@@ -196,10 +210,13 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
 
             @Override
             public void onNext(List<T> ts) {
+                firstPortionLoaded = true;
                 getAdapter().addNewItems(ts);
                 getAdapter().notifyItemInserted(getAdapter().getItemCount() - ts.size());
                 if (ts.size() > 0) {
                     subscribeToLoadingChannel();
+                } else {
+                    allPortionsLoaded = true;
                 }
             }
         };
@@ -221,6 +238,64 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
         }
         if (loadNewItemsSubscription != null && !loadNewItemsSubscription.isUnsubscribed()) {
             loadNewItemsSubscription.unsubscribe();
+        }
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.firstPortionLoadedSaved = firstPortionLoaded;
+        ss.allPortionsLoadedSaved = allPortionsLoaded;
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (!(state.getClass() == SavedState.class)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState)state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        firstPortionLoaded = ss.firstPortionLoadedSaved;
+        allPortionsLoaded = ss.allPortionsLoadedSaved;
+    }
+
+    public static class SavedState extends RecyclerView.BaseSavedState {
+        boolean firstPortionLoadedSaved;
+        boolean allPortionsLoadedSaved;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            boolean params[] = new boolean[]{firstPortionLoadedSaved, allPortionsLoadedSaved};
+            out.writeBooleanArray(params);
+        }
+
+        public static final Creator<SavedState> CREATOR
+                = new Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+
+        private SavedState(Parcel in) {
+            super(in);
+            boolean params[] = new boolean[2];
+            in.readBooleanArray(params);
+            firstPortionLoadedSaved = params[0];
+            allPortionsLoadedSaved = params[1];
         }
     }
 
