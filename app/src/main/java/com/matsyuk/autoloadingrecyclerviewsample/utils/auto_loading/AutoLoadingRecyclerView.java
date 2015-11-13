@@ -149,9 +149,6 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
      * required method
      */
     public void setAdapter(AutoLoadingRecyclerViewAdapter<T> autoLoadingRecyclerViewAdapter) {
-        if (autoLoadingRecyclerViewAdapter == null) {
-            throw new AutoLoadingRecyclerViewExceptions("Null adapter. Please initialise adapter!");
-        }
         this.autoLoadingRecyclerViewAdapter = autoLoadingRecyclerViewAdapter;
         super.setAdapter(autoLoadingRecyclerViewAdapter);
     }
@@ -227,11 +224,9 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
                 .subscribe(loadNewItemsSubscriber);
     }
 
-    /**
-     * required method
-     * call in OnDestroy(or in OnDestroyView) method of Activity or Fragment
-     */
-    public void onDestroy() {
+    @Override
+    protected void onDetachedFromWindow() {
+        setAdapter(null);
         scrollLoadingChannel.onCompleted();
         if (subscribeToLoadingChannelSubscription != null && !subscribeToLoadingChannelSubscription.isUnsubscribed()) {
             subscribeToLoadingChannelSubscription.unsubscribe();
@@ -239,6 +234,7 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
         if (loadNewItemsSubscription != null && !loadNewItemsSubscription.isUnsubscribed()) {
             loadNewItemsSubscription.unsubscribe();
         }
+        super.onDetachedFromWindow();
     }
 
     @Override
