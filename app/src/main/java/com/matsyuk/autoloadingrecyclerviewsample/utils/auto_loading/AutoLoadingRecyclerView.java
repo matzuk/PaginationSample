@@ -41,15 +41,15 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
     private static final String TAG = "AutoLoadingRecyclerView";
     private static final int START_OFFSET = 0;
 
-    private PublishSubject<OffsetAndLimit> scrollLoadingChannel = PublishSubject.create();
-    private Subscription loadNewItemsSubscription;
-    private Subscription subscribeToLoadingChannelSubscription;
-    private int limit;
-    private ILoading<T> iLoading;
-    private AutoLoadingRecyclerViewAdapter<T> autoLoadingRecyclerViewAdapter;
+    protected PublishSubject<OffsetAndLimit> scrollLoadingChannel = PublishSubject.create();
+    protected Subscription loadNewItemsSubscription;
+    protected Subscription subscribeToLoadingChannelSubscription;
+    protected int limit;
+    protected ILoading<T> iLoading;
+    protected AutoLoadingRecyclerViewAdapter<T> autoLoadingRecyclerViewAdapter;
     // for restore after reorientation
-    private boolean firstPortionLoaded;
-    private boolean allPortionsLoaded;
+    protected boolean firstPortionLoaded;
+    protected boolean allPortionsLoaded;
 
     public AutoLoadingRecyclerView(Context context) {
         super(context);
@@ -84,11 +84,11 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
         }
     }
 
-    private void init() {
+    protected void init() {
         startScrollingChannel();
     }
 
-    private void startScrollingChannel() {
+    protected void startScrollingChannel() {
         addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -104,7 +104,7 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
         });
     }
 
-    private int getLastVisibleItemPosition() {
+    protected int getLastVisibleItemPosition() {
         Class recyclerViewLMClass = getLayoutManager().getClass();
         if (recyclerViewLMClass == LinearLayoutManager.class || LinearLayoutManager.class.isAssignableFrom(recyclerViewLMClass)) {
             LinearLayoutManager linearLayoutManager = (LinearLayoutManager)getLayoutManager();
@@ -171,7 +171,7 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
         return iLoading;
     }
 
-    private void subscribeToLoadingChannel() {
+    protected void subscribeToLoadingChannel() {
         Subscriber<OffsetAndLimit> toLoadingChannelSubscriber = new Subscriber<OffsetAndLimit>() {
             @Override
             public void onCompleted() {
@@ -192,7 +192,7 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
                 .subscribe(toLoadingChannelSubscriber);
     }
 
-    private void loadNewItems(OffsetAndLimit offsetAndLimit) {
+    protected void loadNewItems(OffsetAndLimit offsetAndLimit) {
         Subscriber<List<T>> loadNewItemsSubscriber = new Subscriber<List<T>>() {
             @Override
             public void onCompleted() {

@@ -24,10 +24,14 @@ import java.util.List;
  */
 public abstract class AutoLoadingRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<T> listElements = new ArrayList<>();
+    protected List<T> listElements = new ArrayList<>();
 
     public void addNewItems(List<T> items) {
         listElements.addAll(items);
+    }
+
+    public void addNewItem(T item) {
+        listElements.add(item);
     }
 
     public List<T> getItems() {
