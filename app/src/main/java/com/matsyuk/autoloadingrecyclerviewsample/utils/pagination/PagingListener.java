@@ -10,18 +10,17 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading;
+package com.matsyuk.autoloadingrecyclerviewsample.utils.pagination;
+
+import java.util.List;
+
+import rx.Observable;
 
 /**
  * @author e.matsyuk
  */
-public class AutoLoadingRecyclerViewExceptions extends RuntimeException {
+public interface PagingListener<T> {
 
-    public AutoLoadingRecyclerViewExceptions() {
-        super("Exception in AutoLoadingRecyclerView");
-    }
+    Observable<List<T>> onNextPage(int offset);
 
-    public AutoLoadingRecyclerViewExceptions(String detailMessage) {
-        super(detailMessage);
-    }
 }

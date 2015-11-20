@@ -6,13 +6,12 @@
     tools:showIn="@layout/activity_main"
     tools:context=".MainActivityFragment">
 
-    <com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoLoadingRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:scrollbars="vertical"
-        android:overScrollMode="always"
-        android:layout_below="@+id/toolbar" />
+        android:overScrollMode="always" />
 
 </RelativeLayout>
