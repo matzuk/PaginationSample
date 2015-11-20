@@ -80,7 +80,6 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        recyclerView.onDestroy();
         super.onDestroyView();
     }
 
