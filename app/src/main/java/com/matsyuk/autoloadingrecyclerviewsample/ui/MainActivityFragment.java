@@ -12,75 +12,39 @@
  */
 package com.matsyuk.autoloadingrecyclerviewsample.ui;
 
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.matsyuk.autoloadingrecyclerviewsample.R;
-import com.matsyuk.autoloadingrecyclerviewsample.data.EmulateResponseManager;
-import com.matsyuk.autoloadingrecyclerviewsample.data.Item;
-import com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoLoadingRecyclerView;
 
 /**
- * A placeholder fragment containing a simple view.
+ * @author e.matsyuk
  */
 public class MainActivityFragment extends Fragment {
 
-    private final static int LIMIT = 50;
-    private AutoLoadingRecyclerView<Item> recyclerView;
-    private LoadingRecyclerViewAdapter recyclerViewAdapter;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fmt_main, container, false);
         setRetainInstance(true);
-        init(rootView, savedInstanceState);
+        init(rootView);
         return rootView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
+    private void init(View view) {
+        Button autoLoadingButton = (Button)view.findViewById(R.id.btn_auto_loading);
+        autoLoadingButton.setOnClickListener(v -> {
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.replace(R.id.container, new AutoLoadingFragment());
+            transaction.commit();
+        });
 
-    private void init(View view, Bundle savedInstanceState) {
-        recyclerView = (AutoLoadingRecyclerView) view.findViewById(R.id.RecyclerView);
-        GridLayoutManager recyclerViewLayoutManager = new GridLayoutManager(getActivity(), 1);
-        recyclerViewLayoutManager.supportsPredictiveItemAnimations();
-        // init adapter for the first time
-        if (savedInstanceState == null) {
-            recyclerViewAdapter = new LoadingRecyclerViewAdapter();
-            recyclerViewAdapter.setHasStableIds(true);
-        }
-
-        recyclerView.setSaveEnabled(true);
-
-        recyclerView.setLayoutManager(recyclerViewLayoutManager);
-        recyclerView.setLimit(LIMIT);
-        recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setLoadingObservable(offsetAndLimit -> EmulateResponseManager.getInstance().getEmulateResponse(offsetAndLimit.getOffset(), offsetAndLimit.getLimit()));
-        // start loading for the first time
-        if (savedInstanceState == null) {
-            recyclerView.startLoading();
-        }
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        // start loading after reorientation
-        if (savedInstanceState != null) {
-            recyclerView.startLoading();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+        Button paginationToolButton = (Button)view.findViewById(R.id.btn_pagination_tool);
     }
 
 }

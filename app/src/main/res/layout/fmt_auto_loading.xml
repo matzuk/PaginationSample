@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:scrollbars="vertical"
-        android:overScrollMode="always"
-        android:layout_below="@+id/toolbar" />
+        android:overScrollMode="always"/>
 
 </RelativeLayout>

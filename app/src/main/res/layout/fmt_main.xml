@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_auto_loading_name"
+        android:textAllCaps="false"
+        android:id="@+id/btn_auto_loading"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_pagination_tool_name"
+        android:textAllCaps="false"
+        android:id="@+id/btn_pagination_tool"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>
