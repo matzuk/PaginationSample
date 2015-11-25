@@ -10,7 +10,7 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.ui;
+package com.matsyuk.autoloadingrecyclerviewsample.ui.pagination;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -36,7 +36,7 @@ import rx.Subscription;
 public class PaginationFragment extends Fragment {
 
     private final static int LIMIT = 50;
-    private LoadingRecyclerViewAdapter recyclerViewAdapter;
+    private PagingRecyclerViewAdapter recyclerViewAdapter;
     private Subscription pagingSubscription;
 
     @Override
@@ -58,7 +58,7 @@ public class PaginationFragment extends Fragment {
         recyclerViewLayoutManager.supportsPredictiveItemAnimations();
         // init adapter for the first time
         if (savedInstanceState == null) {
-            recyclerViewAdapter = new LoadingRecyclerViewAdapter();
+            recyclerViewAdapter = new PagingRecyclerViewAdapter();
             recyclerViewAdapter.setHasStableIds(true);
         }
 
