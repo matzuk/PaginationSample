@@ -10,28 +10,17 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.data;
+package com.matsyuk.pagination_sample.utils.pagination;
+
+import java.util.List;
+
+import rx.Observable;
 
 /**
- * Simple data model
- *
  * @author e.matsyuk
  */
-public class Item {
+public interface PagingListener<T> {
 
-    private int id;
-    private String itemStr;
+    Observable<List<T>> onNextPage(int offset);
 
-    public Item(int id, String itemStr) {
-        this.id = id;
-        this.itemStr = itemStr;
-    }
-
-    public String getItemStr() {
-        return itemStr;
-    }
-
-    public int getId() {
-        return id;
-    }
 }

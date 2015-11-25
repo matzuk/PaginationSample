@@ -10,7 +10,7 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.ui.auto_loading;
+package com.matsyuk.pagination_sample.ui.auto_loading;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,9 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.matsyuk.autoloadingrecyclerviewsample.R;
-import com.matsyuk.autoloadingrecyclerviewsample.data.Item;
-import com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoLoadingRecyclerViewAdapter;
+import com.matsyuk.pagination_sample.R;
+import com.matsyuk.pagination_sample.data.Item;
+import com.matsyuk.pagination_sample.utils.auto_loading.AutoLoadingRecyclerViewAdapter;
 
 /**
  * @author e.matsyuk

@@ -10,7 +10,7 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading;
+package com.matsyuk.pagination_sample.utils.auto_loading;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -21,7 +21,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.matsyuk.autoloadingrecyclerviewsample.utils.BackgroundExecutor;
+import com.matsyuk.pagination_sample.utils.BackgroundExecutor;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -10,14 +10,13 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.ui;
+package com.matsyuk.pagination_sample.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
-import com.matsyuk.autoloadingrecyclerviewsample.R;
+import com.matsyuk.pagination_sample.R;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -10,17 +10,28 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading;
-
-import java.util.List;
-
-import rx.Observable;
+package com.matsyuk.pagination_sample.data;
 
 /**
+ * Simple data model
+ *
  * @author e.matsyuk
  */
-public interface ILoading<T> {
+public class Item {
 
-    Observable<List<T>> getLoadingObservable(OffsetAndLimit offsetAndLimit);
+    private int id;
+    private String itemStr;
 
+    public Item(int id, String itemStr) {
+        this.id = id;
+        this.itemStr = itemStr;
+    }
+
+    public String getItemStr() {
+        return itemStr;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

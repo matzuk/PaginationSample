@@ -10,7 +10,7 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.ui.pagination;
+package com.matsyuk.pagination_sample.ui.pagination;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -20,10 +20,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.matsyuk.autoloadingrecyclerviewsample.R;
-import com.matsyuk.autoloadingrecyclerviewsample.data.EmulateResponseManager;
-import com.matsyuk.autoloadingrecyclerviewsample.data.Item;
-import com.matsyuk.autoloadingrecyclerviewsample.utils.pagination.PaginationTool;
+import com.matsyuk.pagination_sample.R;
+import com.matsyuk.pagination_sample.data.EmulateResponseManager;
+import com.matsyuk.pagination_sample.data.Item;
+import com.matsyuk.pagination_sample.utils.pagination.PaginationTool;
 
 import java.util.List;
 

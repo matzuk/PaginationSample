@@ -1,4 +1,4 @@
-package com.matsyuk.autoloadingrecyclerviewsample.data;
+package com.matsyuk.pagination_sample.data;
 
 import java.util.ArrayList;
 import java.util.List;
