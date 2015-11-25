@@ -61,8 +61,11 @@ public class PaginationTool {
         if (limit <= 0) {
             throw new PagingException("limit must be greater then 0");
         }
-        if (limit < 0) {
-            throw new PagingException("emptyListCount must be greater then 0");
+        if (emptyListCount < 0) {
+            throw new PagingException("emptyListCount must be not less then 0");
+        }
+        if (retryCount < 0) {
+            throw new PagingException("retryCount must be not less then 0");
         }
 
         int startNumberOfRetryAttempt = 0;
@@ -115,6 +118,7 @@ public class PaginationTool {
 
     private static <T> Observable<List<T>> getPagingObservable(PagingListener<T> listener, Observable<List<T>> observable, int numberOfAttemptToRetry, int offset, int retryCount) {
         return observable.onErrorResumeNext(throwable -> {
+            // retry to load new data portion if error occurred
             if (numberOfAttemptToRetry < retryCount) {
                 int attemptToRetryInc = numberOfAttemptToRetry + 1;
                 return getPagingObservable(listener, listener.onNextPage(offset), attemptToRetryInc, offset, retryCount);
