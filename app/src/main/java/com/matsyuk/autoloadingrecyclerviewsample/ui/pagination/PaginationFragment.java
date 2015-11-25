@@ -10,12 +10,12 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.matsyuk.autoloadingrecyclerviewsample.ui;
+package com.matsyuk.autoloadingrecyclerviewsample.ui.pagination;
 
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +23,25 @@ import android.view.ViewGroup;
 import com.matsyuk.autoloadingrecyclerviewsample.R;
 import com.matsyuk.autoloadingrecyclerviewsample.data.EmulateResponseManager;
 import com.matsyuk.autoloadingrecyclerviewsample.data.Item;
-import com.matsyuk.autoloadingrecyclerviewsample.utils.auto_loading.AutoLoadingRecyclerView;
+import com.matsyuk.autoloadingrecyclerviewsample.utils.pagination.PaginationTool;
+
+import java.util.List;
+
+import rx.Subscriber;
+import rx.Subscription;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AutoLoadingFragment extends Fragment {
+public class PaginationFragment extends Fragment {
 
     private final static int LIMIT = 50;
-    private AutoLoadingRecyclerView<Item> recyclerView;
-    private LoadingRecyclerViewAdapter recyclerViewAdapter;
+    private PagingRecyclerViewAdapter recyclerViewAdapter;
+    private Subscription pagingSubscription;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fmt_auto_loading, container, false);
+        View rootView = inflater.inflate(R.layout.fmt_pagination, container, false);
         setRetainInstance(true);
         init(rootView, savedInstanceState);
         return rootView;
@@ -48,38 +53,46 @@ public class AutoLoadingFragment extends Fragment {
     }
 
     private void init(View view, Bundle savedInstanceState) {
-        recyclerView = (AutoLoadingRecyclerView) view.findViewById(R.id.RecyclerView);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.RecyclerView);
         GridLayoutManager recyclerViewLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerViewLayoutManager.supportsPredictiveItemAnimations();
         // init adapter for the first time
         if (savedInstanceState == null) {
-            recyclerViewAdapter = new LoadingRecyclerViewAdapter();
+            recyclerViewAdapter = new PagingRecyclerViewAdapter();
             recyclerViewAdapter.setHasStableIds(true);
         }
 
         recyclerView.setSaveEnabled(true);
 
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
-        recyclerView.setLimit(LIMIT);
         recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setLoadingObservable(offsetAndLimit -> EmulateResponseManager.getInstance().getEmulateResponse(offsetAndLimit.getOffset(), offsetAndLimit.getLimit()));
-        // start loading for the first time
-        if (savedInstanceState == null) {
-            recyclerView.startLoading();
+        // if all items was loaded we don't need Pagination
+        if (recyclerViewAdapter.isAllItemsLoaded()) {
+            return;
         }
-    }
+        // RecyclerView pagination
+        pagingSubscription = PaginationTool
+                .paging(recyclerView, offset -> EmulateResponseManager.getInstance().getEmulateResponse(recyclerViewAdapter.getItemCount(), LIMIT), LIMIT)
+                .subscribe(new Subscriber<List<Item>>() {
+                    @Override
+                    public void onCompleted() { }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        // start loading after reorientation
-        if (savedInstanceState != null) {
-            recyclerView.startLoading();
-        }
+                    @Override
+                    public void onError(Throwable e) { }
+
+                    @Override
+                    public void onNext(List<Item> items) {
+                        recyclerViewAdapter.addNewItems(items);
+                        recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.getItemCount() - items.size());
+                    }
+                });
     }
 
     @Override
     public void onDestroyView() {
+        if (pagingSubscription != null && !pagingSubscription.isUnsubscribed()) {
+            pagingSubscription.unsubscribe();
+        }
         super.onDestroyView();
     }
 

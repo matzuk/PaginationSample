@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.matsyuk.autoloadingrecyclerviewsample.R;
+import com.matsyuk.autoloadingrecyclerviewsample.ui.auto_loading.AutoLoadingFragment;
+import com.matsyuk.autoloadingrecyclerviewsample.ui.pagination.PaginationFragment;
 
 /**
  * @author e.matsyuk
@@ -45,6 +47,12 @@ public class MainActivityFragment extends Fragment {
         });
 
         Button paginationToolButton = (Button)view.findViewById(R.id.btn_pagination_tool);
+        paginationToolButton.setOnClickListener(v -> {
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.replace(R.id.container, new PaginationFragment());
+            transaction.commit();
+        });
     }
 
 }
