@@ -1,5 +1,10 @@
-# AutoLoadingRecyclerViewSample
-Sample of practical using of AutoLoadingRecyclerView
+# PaginationSample
+Sample of practical using of AutoLoadingRecyclerView and PaginationTool which transform common RecyclerView in RecyclerView with infinity pagination with RxJava help 
+
+# Components
+1. <b>com.matsyuk.pagination_sample.utils</b> - <b><i>AutoLoadingRecyclerView</i></b> is a RecyclerView with the ability to add more items on it when reaches the end of the list, and <b><i>PaginationTool</i></b> is independent, more flexibla, stable and compact module which transform any RecyclerView in RecyclerView with infinity pagination. <b><i>AutoLoadingRecyclerView</i></b> and <b><i>PaginationTool</i></b> with correct error handling and reorienation screen handling
+2. <b>com.matsyuk.pagination_sample.data</b> - Fake data source for lists
+3. <b>com.matsyuk.pagination_sample.ui</b> - samples of practical using
 
 # Description
 Article about AutoLoadingRecyclerView - http://habrahabr.ru/post/268991/
