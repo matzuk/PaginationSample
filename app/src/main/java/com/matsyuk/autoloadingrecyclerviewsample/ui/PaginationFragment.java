@@ -33,7 +33,7 @@ import rx.Subscription;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class PaginationFragment extends Fragment {
 
     private final static int LIMIT = 50;
     private LoadingRecyclerViewAdapter recyclerViewAdapter;
@@ -41,7 +41,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fmt_pagination, container, false);
         setRetainInstance(true);
         init(rootView, savedInstanceState);
         return rootView;
