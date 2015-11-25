@@ -36,18 +36,22 @@ public class PaginationTool {
     private static final int EMPTY_LIST_ITEMS_COUNT = 0;
     // default limit for requests
     private static final int DEFAULT_LIMIT = 50;
-
+    // default max attempts to retry loading request
     private static final int MAX_ATTEMPTS_TO_RETRY_LOADING = 3;
 
     public static <T> Observable<List<T>> paging(RecyclerView recyclerView, PagingListener<T> pagingListener) {
-        return paging(recyclerView, pagingListener, DEFAULT_LIMIT, EMPTY_LIST_ITEMS_COUNT);
+        return paging(recyclerView, pagingListener, DEFAULT_LIMIT, EMPTY_LIST_ITEMS_COUNT, MAX_ATTEMPTS_TO_RETRY_LOADING);
     }
 
     public static <T> Observable<List<T>> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit) {
-        return paging(recyclerView, pagingListener, limit, EMPTY_LIST_ITEMS_COUNT);
+        return paging(recyclerView, pagingListener, limit, EMPTY_LIST_ITEMS_COUNT, MAX_ATTEMPTS_TO_RETRY_LOADING);
     }
 
     public static <T> Observable<List<T>> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit, int emptyListCount) {
+        return paging(recyclerView, pagingListener, limit, emptyListCount, MAX_ATTEMPTS_TO_RETRY_LOADING);
+    }
+
+    public static <T> Observable<List<T>> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit, int emptyListCount, int retryCount) {
         if (recyclerView == null) {
             throw new PagingException("null recyclerView");
         }
@@ -61,9 +65,10 @@ public class PaginationTool {
             throw new PagingException("emptyListCount must be greater then 0");
         }
 
+        int startNumberOfRetryAttempt = 0;
         return getScrollObservable(recyclerView, limit, emptyListCount)
                 .distinctUntilChanged()
-                .switchMap(offset -> getPagingObservable(pagingListener, pagingListener.onNextPage(offset), 0, offset))
+                .switchMap(offset -> getPagingObservable(pagingListener, pagingListener.onNextPage(offset), startNumberOfRetryAttempt, offset, retryCount))
                 .subscribeOn(Schedulers.from(BackgroundExecutor.getSafeBackgroundExecutor()))
                 .observeOn(AndroidSchedulers.mainThread());
 
@@ -108,11 +113,11 @@ public class PaginationTool {
         throw new PagingException("Unknown LayoutManager class: " + recyclerViewLMClass.toString());
     }
 
-    private static <T> Observable<List<T>> getPagingObservable(PagingListener<T> listener, Observable<List<T>> observable, int attemptToRetry, int offset) {
+    private static <T> Observable<List<T>> getPagingObservable(PagingListener<T> listener, Observable<List<T>> observable, int numberOfAttemptToRetry, int offset, int retryCount) {
         return observable.onErrorResumeNext(throwable -> {
-            if (attemptToRetry < MAX_ATTEMPTS_TO_RETRY_LOADING) {
-                int attemptToRetryInc = attemptToRetry + 1;
-                return getPagingObservable(listener, listener.onNextPage(offset), attemptToRetryInc, offset);
+            if (numberOfAttemptToRetry < retryCount) {
+                int attemptToRetryInc = numberOfAttemptToRetry + 1;
+                return getPagingObservable(listener, listener.onNextPage(offset), attemptToRetryInc, offset, retryCount);
             } else {
                 return Observable.empty();
             }
