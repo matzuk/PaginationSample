@@ -72,7 +72,7 @@ public class PaginationFragment extends Fragment {
         }
         // RecyclerView pagination
         pagingSubscription = PaginationTool
-                .paging(recyclerView, offset -> EmulateResponseManager.getInstance().getEmulateResponse(recyclerViewAdapter.getItemCount(), LIMIT), LIMIT)
+                .paging(recyclerView, offset -> EmulateResponseManager.getInstance().getEmulateResponse(offset, LIMIT), LIMIT)
                 .subscribe(new Subscriber<List<Item>>() {
                     @Override
                     public void onCompleted() { }
