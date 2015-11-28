@@ -20,7 +20,5 @@ import rx.Observable;
  * @author e.matsyuk
  */
 public interface PagingListener<T> {
-
     Observable<List<T>> onNextPage(int offset);
-
 }

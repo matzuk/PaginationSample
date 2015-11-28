@@ -12,7 +12,6 @@
  */
 package com.matsyuk.pagination_sample.utils.pagination;
 
-import android.os.Looper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -74,8 +73,7 @@ public class PaginationTool {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
                 .observeOn(Schedulers.from(BackgroundExecutor.getSafeBackgroundExecutor()))
-                .switchMap(offset -> getPagingObservable(pagingListener, pagingListener.onNextPage(offset), startNumberOfRetryAttempt, offset, retryCount))
-                .observeOn(AndroidSchedulers.mainThread());
+                .switchMap(offset -> getPagingObservable(pagingListener, pagingListener.onNextPage(offset), startNumberOfRetryAttempt, offset, retryCount));
     }
 
     private static Observable<Integer> getScrollObservable(RecyclerView recyclerView, int limit, int emptyListCount) {

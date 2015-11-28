@@ -29,6 +29,7 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -62,8 +63,6 @@ public class PaginationFragment extends Fragment {
             recyclerViewAdapter.setHasStableIds(true);
         }
 
-        recyclerView.setSaveEnabled(true);
-
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerView.setAdapter(recyclerViewAdapter);
         // if all items was loaded we don't need Pagination
@@ -73,12 +72,15 @@ public class PaginationFragment extends Fragment {
         // RecyclerView pagination
         pagingSubscription = PaginationTool
                 .paging(recyclerView, offset -> EmulateResponseManager.getInstance().getEmulateResponse(offset, LIMIT), LIMIT)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Item>>() {
                     @Override
-                    public void onCompleted() { }
+                    public void onCompleted() {
+                    }
 
                     @Override
-                    public void onError(Throwable e) { }
+                    public void onError(Throwable e) {
+                    }
 
                     @Override
                     public void onNext(List<Item> items) {
