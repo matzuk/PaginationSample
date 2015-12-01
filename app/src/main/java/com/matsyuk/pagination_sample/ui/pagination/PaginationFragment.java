@@ -98,7 +98,9 @@ public class PaginationFragment extends Fragment {
             pagingSubscription.unsubscribe();
         }
         // for memory leak prevention (RecycleView is not unsubscibed from adapter DataObserver)
-        recyclerView.setAdapter(null);
+        if (recyclerView != null) {
+            recyclerView.setAdapter(null);
+        }
         super.onDestroyView();
     }
 
