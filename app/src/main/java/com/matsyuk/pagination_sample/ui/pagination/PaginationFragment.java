@@ -38,6 +38,7 @@ public class PaginationFragment extends Fragment {
 
     private final static int LIMIT = 50;
     private PagingRecyclerViewAdapter recyclerViewAdapter;
+    private RecyclerView recyclerView;
     private Subscription pagingSubscription;
 
     @Override
@@ -54,7 +55,7 @@ public class PaginationFragment extends Fragment {
     }
 
     private void init(View view, Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.RecyclerView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.RecyclerView);
         GridLayoutManager recyclerViewLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerViewLayoutManager.supportsPredictiveItemAnimations();
         // init adapter for the first time
@@ -62,6 +63,7 @@ public class PaginationFragment extends Fragment {
             recyclerViewAdapter = new PagingRecyclerViewAdapter();
             recyclerViewAdapter.setHasStableIds(true);
         }
+        recyclerView.setSaveEnabled(true);
 
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -95,6 +97,8 @@ public class PaginationFragment extends Fragment {
         if (pagingSubscription != null && !pagingSubscription.isUnsubscribed()) {
             pagingSubscription.unsubscribe();
         }
+        // for memory leak prevention (RecycleView is not unsubscibed from adapter DataObserver)
+        recyclerView.setAdapter(null);
         super.onDestroyView();
     }
 
