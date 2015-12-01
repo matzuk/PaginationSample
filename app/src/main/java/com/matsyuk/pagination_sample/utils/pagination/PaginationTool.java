@@ -39,19 +39,19 @@ public class PaginationTool {
     // default max attempts to retry loading request
     private static final int MAX_ATTEMPTS_TO_RETRY_LOADING = 3;
 
-    public static <T> Observable<List<T>> paging(RecyclerView recyclerView, PagingListener<T> pagingListener) {
+    public static <T> Observable<T> paging(RecyclerView recyclerView, PagingListener<T> pagingListener) {
         return paging(recyclerView, pagingListener, DEFAULT_LIMIT, EMPTY_LIST_ITEMS_COUNT, MAX_ATTEMPTS_TO_RETRY_LOADING);
     }
 
-    public static <T> Observable<List<T>> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit) {
+    public static <T> Observable<T> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit) {
         return paging(recyclerView, pagingListener, limit, EMPTY_LIST_ITEMS_COUNT, MAX_ATTEMPTS_TO_RETRY_LOADING);
     }
 
-    public static <T> Observable<List<T>> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit, int emptyListCount) {
+    public static <T> Observable<T> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit, int emptyListCount) {
         return paging(recyclerView, pagingListener, limit, emptyListCount, MAX_ATTEMPTS_TO_RETRY_LOADING);
     }
 
-    public static <T> Observable<List<T>> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit, int emptyListCount, int retryCount) {
+    public static <T> Observable<T> paging(RecyclerView recyclerView, PagingListener<T> pagingListener, int limit, int emptyListCount, int retryCount) {
         if (recyclerView == null) {
             throw new PagingException("null recyclerView");
         }
@@ -115,7 +115,7 @@ public class PaginationTool {
         throw new PagingException("Unknown LayoutManager class: " + recyclerViewLMClass.toString());
     }
 
-    private static <T> Observable<List<T>> getPagingObservable(PagingListener<T> listener, Observable<List<T>> observable, int numberOfAttemptToRetry, int offset, int retryCount) {
+    private static <T> Observable<T> getPagingObservable(PagingListener<T> listener, Observable<T> observable, int numberOfAttemptToRetry, int offset, int retryCount) {
         return observable.onErrorResumeNext(throwable -> {
             // retry to load new data portion if error occurred
             if (numberOfAttemptToRetry < retryCount) {
