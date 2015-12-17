@@ -8,6 +8,7 @@ Sample of practical using of AutoLoadingRecyclerView and PaginationTool which tr
 
 # Description
 Article about AutoLoadingRecyclerView - http://habrahabr.ru/post/268991/
+
 Article about PaginationTool - http://habrahabr.ru/post/271875/
 
 # License
