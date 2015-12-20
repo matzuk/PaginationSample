@@ -11,6 +11,29 @@ Article about AutoLoadingRecyclerView - http://habrahabr.ru/post/268991/
 
 Article about PaginationTool - http://habrahabr.ru/post/271875/
 
+# Example of PaginationTool using
+```java
+// RecyclerView pagination
+PaginationTool
+        .paging(recyclerView, offset -> getEmulateResponse(offset, LIMIT))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<List<Item>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(List<Item> items) {
+                recyclerViewAdapter.addNewItems(items);
+                recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.getItemCount() - items.size());
+            }
+        });
+```
+
 # License
 
  Copyright 2015 Eugene Matsyuk (matzuk2@mail.ru)
