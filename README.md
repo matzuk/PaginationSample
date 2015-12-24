@@ -14,9 +14,10 @@ Article about PaginationTool - http://habrahabr.ru/post/271875/
 # Example of PaginationTool using
 ```java
 // RecyclerView pagination
-PaginationTool<List<Item>> paginationTool = PaginationTool.buildPagingObservable(recyclerView, offset -> EmulateResponseManager.getInstance().getEmulateResponse(offset, LIMIT))
-                .setLimit(LIMIT)
-                .build();
+PaginationTool<List<Item>> paginationTool = PaginationTool.
+        buildPagingObservable(recyclerView, offset -> EmulateResponseManager.getInstance().getEmulateResponse(offset, LIMIT))
+          .setLimit(LIMIT)
+          .build();
 
 pagingSubscription = paginationTool
         .getPagingObservable()
