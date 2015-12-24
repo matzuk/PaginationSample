@@ -27,6 +27,7 @@ import com.matsyuk.pagination_sample.utils.pagination.PaginationTool;
 
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -71,9 +72,14 @@ public class PaginationFragment extends Fragment {
         if (recyclerViewAdapter.isAllItemsLoaded()) {
             return;
         }
+
         // RecyclerView pagination
-        pagingSubscription = PaginationTool
-                .paging(recyclerView, offset -> EmulateResponseManager.getInstance().getEmulateResponse(offset, LIMIT), LIMIT)
+        PaginationTool<List<Item>> paginationTool = PaginationTool.buildPagingObservable(recyclerView, offset -> EmulateResponseManager.getInstance().getEmulateResponse(offset, LIMIT))
+                .setLimit(LIMIT)
+                .build();
+
+        pagingSubscription = paginationTool
+                .getPagingObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Item>>() {
                     @Override
