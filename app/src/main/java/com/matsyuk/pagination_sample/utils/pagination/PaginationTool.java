@@ -99,7 +99,7 @@ public class PaginationTool<T> {
         throw new PagingException("Unknown LayoutManager class: " + recyclerViewLMClass.toString());
     }
 
-    private Observable getPagingObservable(PagingListener<T> listener, Observable<T> observable, int numberOfAttemptToRetry, int offset, int retryCount) {
+    private Observable<T> getPagingObservable(PagingListener<T> listener, Observable<T> observable, int numberOfAttemptToRetry, int offset, int retryCount) {
         return observable.onErrorResumeNext(throwable -> {
             // retry to load new data portion if error occurred
             if (numberOfAttemptToRetry < retryCount) {
