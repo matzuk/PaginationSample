@@ -1,11 +1,11 @@
 /**
  * Copyright 2015 Eugene Matsyuk (matzuk2@mail.ru)
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
@@ -27,23 +27,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * @author e.matsyuk
  */
 public class AutoLoadingRecyclerView<T> extends RecyclerView {
 
-    private static final String TAG = "AutoLoadingRecyclerView";
     private static final int START_OFFSET = 0;
 
     protected PublishSubject<OffsetAndLimit> scrollLoadingChannel = PublishSubject.create();
-    protected Subscription loadNewItemsSubscription;
-    protected Subscription subscribeToLoadingChannelSubscription;
+    protected Disposable loadNewItemsSubscription;
+    protected Disposable subscribeToLoadingChannelSubscription;
     protected int limit;
     protected ILoading<T> iLoading;
     protected AutoLoadingRecyclerViewAdapter<T> autoLoadingRecyclerViewAdapter;
@@ -93,11 +91,11 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int position = getLastVisibleItemPosition();
-                int limit = getLimit();
-                int updatePosition = getAdapter().getItemCount() - 1 - (limit / 2);
+                int currentLimit = getLimit();
+                int updatePosition = getAdapter().getItemCount() - 1 - (currentLimit / 2);
                 if (position >= updatePosition) {
                     int offset = getAdapter().getItemCount();
-                    OffsetAndLimit offsetAndLimit = new OffsetAndLimit(offset, limit);
+                    OffsetAndLimit offsetAndLimit = new OffsetAndLimit(offset, currentLimit);
                     scrollLoadingChannel.onNext(offsetAndLimit);
                 }
             }
@@ -107,10 +105,10 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
     protected int getLastVisibleItemPosition() {
         Class recyclerViewLMClass = getLayoutManager().getClass();
         if (recyclerViewLMClass == LinearLayoutManager.class || LinearLayoutManager.class.isAssignableFrom(recyclerViewLMClass)) {
-            LinearLayoutManager linearLayoutManager = (LinearLayoutManager)getLayoutManager();
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) getLayoutManager();
             return linearLayoutManager.findLastVisibleItemPosition();
         } else if (recyclerViewLMClass == StaggeredGridLayoutManager.class || StaggeredGridLayoutManager.class.isAssignableFrom(recyclerViewLMClass)) {
-            StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager)getLayoutManager();
+            StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) getLayoutManager();
             int[] into = staggeredGridLayoutManager.findLastVisibleItemPositions(null);
             List<Integer> intoList = new ArrayList<>();
             for (int i : into) {
@@ -135,16 +133,6 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
         this.limit = limit;
     }
 
-    @Deprecated
-    @Override
-    public void setAdapter(Adapter adapter) {
-        if (adapter instanceof AutoLoadingRecyclerViewAdapter) {
-            super.setAdapter(adapter);
-        } else {
-            throw new AutoLoadingRecyclerViewExceptions("Adapter must be implement IAutoLoadedAdapter");
-        }
-    }
-
     /**
      * required method
      */
@@ -153,6 +141,7 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
         super.setAdapter(autoLoadingRecyclerViewAdapter);
     }
 
+    @Override
     public AutoLoadingRecyclerViewAdapter<T> getAdapter() {
         if (autoLoadingRecyclerViewAdapter == null) {
             throw new AutoLoadingRecyclerViewExceptions("Null adapter. Please initialise adapter!");
@@ -172,67 +161,42 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
     }
 
     protected void subscribeToLoadingChannel() {
-        Subscriber<OffsetAndLimit> toLoadingChannelSubscriber = new Subscriber<OffsetAndLimit>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "subscribeToLoadingChannel error", e);
-            }
-
-            @Override
-            public void onNext(OffsetAndLimit offsetAndLimit) {
-                unsubscribe();
-                loadNewItems(offsetAndLimit);
-            }
-        };
         subscribeToLoadingChannelSubscription = scrollLoadingChannel
-                .subscribe(toLoadingChannelSubscriber);
+                .subscribe(offsetAndLimit -> {
+                    subscribeToLoadingChannelSubscription.dispose();
+                    loadNewItems(offsetAndLimit);
+                }, throwable ->
+                        Log.e(this.getClass().getSimpleName(), "subscribeToLoadingChannel error", throwable));
     }
 
     protected void loadNewItems(OffsetAndLimit offsetAndLimit) {
-        Subscriber<List<T>> loadNewItemsSubscriber = new Subscriber<List<T>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "loadNewItems error", e);
-                subscribeToLoadingChannel();
-            }
-
-            @Override
-            public void onNext(List<T> ts) {
-                firstPortionLoaded = true;
-                getAdapter().addNewItems(ts);
-                getAdapter().notifyItemInserted(getAdapter().getItemCount() - ts.size());
-                if (ts.size() > 0) {
-                    subscribeToLoadingChannel();
-                } else {
-                    allPortionsLoaded = true;
-                }
-            }
-        };
-
         loadNewItemsSubscription = getLoadingObservable().getLoadingObservable(offsetAndLimit)
                 .subscribeOn(Schedulers.from(BackgroundExecutor.getSafeBackgroundExecutor()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(loadNewItemsSubscriber);
+                .subscribe(tList -> {
+                    firstPortionLoaded = true;
+                    getAdapter().addNewItems(tList);
+                    getAdapter().notifyItemInserted(getAdapter().getItemCount() - tList.size());
+                    if (tList.size() > 0) {
+                        subscribeToLoadingChannel();
+                    } else {
+                        allPortionsLoaded = true;
+                    }
+                }, throwable -> {
+                    Log.e("sdf", "loadNewItems error", throwable);
+                    subscribeToLoadingChannel();
+                });
     }
 
     @Override
     protected void onDetachedFromWindow() {
         setAdapter(null);
-        scrollLoadingChannel.onCompleted();
-        if (subscribeToLoadingChannelSubscription != null && !subscribeToLoadingChannelSubscription.isUnsubscribed()) {
-            subscribeToLoadingChannelSubscription.unsubscribe();
+        scrollLoadingChannel.onComplete();
+        if (subscribeToLoadingChannelSubscription != null && !subscribeToLoadingChannelSubscription.isDisposed()) {
+            subscribeToLoadingChannelSubscription.dispose();
         }
-        if (loadNewItemsSubscription != null && !loadNewItemsSubscription.isUnsubscribed()) {
-            loadNewItemsSubscription.unsubscribe();
+        if (loadNewItemsSubscription != null && !loadNewItemsSubscription.isDisposed()) {
+            loadNewItemsSubscription.dispose();
         }
         super.onDetachedFromWindow();
     }
@@ -248,12 +212,12 @@ public class AutoLoadingRecyclerView<T> extends RecyclerView {
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        if (!(state.getClass() == SavedState.class)) {
+        if ((state.getClass() != SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
         }
 
-        SavedState ss = (SavedState)state;
+        SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
 
         firstPortionLoaded = ss.firstPortionLoadedSaved;

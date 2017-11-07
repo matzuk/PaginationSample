@@ -12,9 +12,7 @@
  */
 package com.matsyuk.pagination_sample.utils.pagination;
 
-import java.util.List;
-
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * @author e.matsyuk

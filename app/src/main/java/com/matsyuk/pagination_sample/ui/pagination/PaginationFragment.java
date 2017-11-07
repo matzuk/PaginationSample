@@ -12,8 +12,8 @@
  */
 package com.matsyuk.pagination_sample.ui.pagination;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,10 +27,9 @@ import com.matsyuk.pagination_sample.utils.pagination.PaginationTool;
 
 import java.util.List;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -40,7 +39,7 @@ public class PaginationFragment extends Fragment {
     private final static int LIMIT = 50;
     private PagingRecyclerViewAdapter recyclerViewAdapter;
     private RecyclerView recyclerView;
-    private Subscription pagingSubscription;
+    private Disposable pagingSubscription;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,27 +80,16 @@ public class PaginationFragment extends Fragment {
         pagingSubscription = paginationTool
                 .getPagingObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Item>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onNext(List<Item> items) {
-                        recyclerViewAdapter.addNewItems(items);
-                        recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.getItemCount() - items.size());
-                    }
+                .subscribe((items) -> {
+                    recyclerViewAdapter.addNewItems(items);
+                    recyclerViewAdapter.notifyItemInserted(recyclerViewAdapter.getItemCount() - items.size());
                 });
     }
 
     @Override
     public void onDestroyView() {
-        if (pagingSubscription != null && !pagingSubscription.isUnsubscribed()) {
-            pagingSubscription.unsubscribe();
+        if (pagingSubscription != null && !pagingSubscription.isDisposed()) {
+            pagingSubscription.dispose();
         }
         // for memory leak prevention (RecycleView is not unsubscibed from adapter DataObserver)
         if (recyclerView != null) {
