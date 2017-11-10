@@ -22,10 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author e.matsyuk
@@ -63,7 +62,7 @@ public class PaginationTool<T> {
             final RecyclerView.OnScrollListener sl = new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    if (!subscriber.isUnsubscribed()) {
+                    if (!subscriber.isDisposed()) {
                         int position = getLastVisibleItemPosition(recyclerView);
                         int updatePosition = recyclerView.getAdapter().getItemCount() - 1 - (limit / 2);
                         if (position >= updatePosition) {
@@ -74,7 +73,7 @@ public class PaginationTool<T> {
                 }
             };
             recyclerView.addOnScrollListener(sl);
-            subscriber.add(Subscriptions.create(() -> recyclerView.removeOnScrollListener(sl)));
+            subscriber.setCancellable(() -> recyclerView.removeOnScrollListener(sl));
             if (recyclerView.getAdapter().getItemCount() == emptyListCount) {
                 int offset = emptyListCountPlusToOffset ? recyclerView.getAdapter().getItemCount() : recyclerView.getAdapter().getItemCount() - emptyListCount;
                 subscriber.onNext(offset);

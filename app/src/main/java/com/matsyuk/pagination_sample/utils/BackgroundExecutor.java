@@ -18,8 +18,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Global Executor for background tasks
@@ -27,6 +28,10 @@ import rx.schedulers.Schedulers;
  * @author e.matsyuk
  */
 public class BackgroundExecutor {
+
+    private BackgroundExecutor() {
+        //use getSafeBackgroundExecutor() or createSafeBackgroundObservable(ObservableOnSubscribe<T> f) methods
+    }
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -47,7 +52,7 @@ public class BackgroundExecutor {
         return THREAD_POOL_EXECUTOR;
     }
 
-    public static <T> Observable<T> createSafeBackgroundObservable(Observable.OnSubscribe<T> f) {
+    public static <T> Observable<T> createSafeBackgroundObservable(ObservableOnSubscribe<T> f) {
         return Observable.create(f).subscribeOn(Schedulers.from(THREAD_POOL_EXECUTOR));
     }
 
