@@ -27,7 +27,6 @@ import com.matsyuk.pagination_sample.utils.pagination.PaginationTool;
 
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
